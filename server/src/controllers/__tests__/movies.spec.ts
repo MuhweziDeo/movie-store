@@ -1,6 +1,5 @@
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
-import { Request, Response } from 'express';
-
+import { Response } from 'express';
 import { elasticClient } from '../../elastic';
 import {MovieRequest, searchMovies} from '../movies';
 
@@ -48,6 +47,9 @@ const mockResponse: SearchResponse = {
     }
 }
 describe('Movies Controller', () => {
+    afterAll(() => {
+        jest.resetAllMocks();
+    })
     it('should return list of hits', async() => {
         const spy = jest.spyOn(elasticClient, 'search');
         spy.mockResolvedValueOnce(mockResponse);
@@ -57,7 +59,22 @@ describe('Movies Controller', () => {
         const res = {
             send: jest.fn(),
         } as unknown as Response;
-        searchMovies(req as MovieRequest, res);
+        await searchMovies(req as MovieRequest, res);
         expect(spy).toHaveBeenCalled();
+        expect(res.send).toHaveBeenCalledWith(mockResponse);
+    })
+
+    it('should return status code 500 on error', async() => {
+        const spy = jest.spyOn(elasticClient, 'search');
+        spy.mockRejectedValueOnce(Error('something went wrong'));
+        const req = {
+            query: {q: 'helo'}
+        } 
+        const res = {
+            send: jest.fn(),
+            status: jest.fn(() => ({send: jest.fn()}))
+        } as unknown as Response;
+        await searchMovies(req as MovieRequest, res);
+        expect(res.status).toHaveBeenCalledWith(500);
     })
 })

@@ -19,6 +19,7 @@ export const searchMovies = async(req: MovieRequest, res: Response) => {
         return res.send(results);
 
     } catch (error: any) {
+        console.log(error);
         return res.status(500).send({
             message: error.message || 'Something went wrong there',
             success: false,
