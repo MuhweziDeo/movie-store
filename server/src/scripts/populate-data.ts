@@ -1,5 +1,8 @@
-import Movie from '../db/models/movie';
+import dotenv from 'dotenv';
+dotenv.config();
+import { elasticClient } from "../elastic";
 
+console.log(process.env.ELASTIC_PASSWORD)
 /**
  * Made a request on http://omdbapi.com/?apikey=a7abe54&y=2001&s=space to get this json 
  * data manually
@@ -83,9 +86,17 @@ const data = [
     }
 ]
 
-data.forEach((movie, index) => {
-    Movie.create(movie);
+data.forEach(async(movie, index) => {
+    elasticClient.index({
+        index: 'movies-store',
+        document: movie
+    }).then((response) => {
+        console.log(response);
+    }).catch((err) => {
+        console.log(err);
+    })
     if(index === data.length - 1) {
+        await elasticClient.indices.refresh({ index: 'movies-store' })
         process.exit();
     }
 })
