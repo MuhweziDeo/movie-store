@@ -66,6 +66,20 @@ describe('Movies Controller', () => {
     expect(res.send).toHaveBeenCalledWith(mockResponse);
   });
 
+  it('should return status code 400 if query text is not provided', async () => {
+    const spy = jest.spyOn(elasticClient, 'search');
+    spy.mockResolvedValueOnce(mockResponse);
+    const req = {
+      query: { q: '    ' },
+    };
+    const res = {
+      send: jest.fn(),
+      status: jest.fn(() => ({ send: jest.fn() })),
+    } as unknown as Response;
+    await searchMovies(req as MovieRequest, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
   it('should return status code 500 on error', async () => {
     const spy = jest.spyOn(elasticClient, 'search');
     spy.mockRejectedValueOnce(Error('something went wrong'));
