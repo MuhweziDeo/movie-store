@@ -3,6 +3,6 @@ import router from './routes';
 
 const app: Express = express();
 
-app.use( router);
+app.use(router);
 
 export default app;

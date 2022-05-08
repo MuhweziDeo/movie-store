@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import app from "./src/app";
+import app from './src/app';
 import { PORT } from './src/config';
 
 const port = PORT || 3000;
