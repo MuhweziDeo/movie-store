@@ -11,8 +11,7 @@ interface Props {
  * @returns JSX
  */
 export const MovieList: React.FunctionComponent<Props> = (props) => {
-    console.log(props.movies.length)
-    return <div className="d-flex flex-row bd-highlight mb-3 justify-content-between">
+    return <div className="d-flex flex-row bd-highlight flex-wrap mb-3 justify-content-around">
         {props.movies.map((movie, index) => <div>
             <MovieCard
                 movie={movie}

@@ -50,7 +50,10 @@ function App() {
           placeholder="Search" />
       </div>
 
-      {(!loading && error) ? <Error message={error} /> : null}
+      {(!loading && error) && <Error message={error} /> }
+
+      {(!loading && !movies.length) && <Error message='No items found' />}
+
 
       {loading && <div className="spinner-border" role="status">
         <span className="visually-hidden">Loading...</span>
