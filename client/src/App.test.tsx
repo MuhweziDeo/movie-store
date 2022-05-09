@@ -82,4 +82,37 @@ describe('App', () => {
       expect(screen.getByTestId('error-wrapper')).toBeInTheDocument();
     })
   });
+
+  it('should render No items found', async() => {
+    const emptyMovies = {
+      "took": 2,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 0,
+              "relation": "eq"
+          },
+          "max_score": 1,
+          "hits": []
+      }
+    }
+    render(<App/>)
+    const input = screen.queryByTestId('search-input') as Element;
+    expect(input).toBeInTheDocument();
+    mock.onGet('/movies/search?q=on').reply(200, emptyMovies);
+    fireEvent.change(input, {target: {value: 'on'}})
+    await waitFor(() => {
+      expect((screen.queryAllByTestId('movie-card')).length).toBe(0);
+
+    })
+    await waitFor(() => {
+      expect(screen.getByTestId('error-wrapper').innerHTML).toBe('No items found');
+    })
+  });
 })

@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { elasticClient } from '../elastic';
 
-console.log(process.env.ELASTIC_PASSWORD);
 /**
  * Made a request on http://omdbapi.com/?apikey=a7abe54&y=2001&s=space to get this json
  * data manually
